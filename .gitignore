@@ -1,0 +1,15 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+data/
+*.deadletter.jsonl
+*.corrupt.json
+userChatBackend_creds.txt
+.idea/
+.vscode/
+sql/
+postman/

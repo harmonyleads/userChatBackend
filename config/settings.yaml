@@ -1,0 +1,74 @@
+# Non-secret defaults. Secrets and environment-specific values come from
+# environment variables (see .env.example). Environment variables win.
+
+app:
+  name: userChatBackend
+  log_level: INFO
+  docs_enabled: true
+  api_prefix: ""
+
+auth:
+  # Publishable keys the chat page sends in X-Widget-Key. Override with WIDGET_KEYS.
+  widget_keys: []
+  # HMAC secret for session tokens. Override with AUTH_SIGNING_SECRET.
+  signing_secret: ""
+  session_ttl_seconds: 43200
+  clock_skew_seconds: 15
+  # Use "*" only for local development. Set AUTH_ALLOWED_ORIGINS in production.
+  allowed_origins:
+    - "*"
+  allow_missing_origin: false
+  rate_limit_requests: 300
+  rate_limit_window_seconds: 60
+  trust_proxy: true
+
+database:
+  enabled: true
+  # Connection parts come from DATABASE_HOST, DATABASE_PORT, DATABASE_USER,
+  # DATABASE_PASSWORD, and DATABASE_NAME in .env. Leave them empty here.
+  host: ""
+  port: 5432
+  user: ""
+  password: ""
+  database_name: postgres
+  dsn: ""
+  ssl: true
+  min_pool_size: 1
+  max_pool_size: 5
+  command_timeout_seconds: 15
+  startup_retries: 5
+  startup_retry_seconds: 2
+  auto_migrate: false
+  schema_path: sql/001_schema.sql
+  max_inactive_connection_lifetime_seconds: 300
+
+sarah:
+  url_template: "https://staging.cosellus.ai/api/v1/public/hclp/{sarah_auth_code}/sarah/ask"
+  default_auth_code: ""
+  allowed_auth_codes: []
+  # When false, a client-supplied code must match the default or the allow-list.
+  allow_unlisted_auth_codes: false
+  timeout_seconds: 30
+  connect_timeout_seconds: 5
+  # Extra tries for connection failures and HTTP 502/503. Timeouts are not retried.
+  max_retries: 1
+
+persistence:
+  # Queue writes, retry them, and keep a local write-ahead log.
+  # wait_for_completion keeps the Cloud Run request open until Postgres accepts
+  # the row (or the write is dead-lettered). Cloud Run freezes CPU after the
+  # response, so leave this true unless the service uses CPU always allocated.
+  wait_for_completion: true
+  request_wait_timeout_seconds: 25
+  wal_path: data/wal.json
+  max_attempts: 5
+  initial_backoff_seconds: 0.4
+  max_backoff_seconds: 5
+  shutdown_drain_seconds: 8
+  worker_count: 2
+  max_response_bytes: 200000
+
+limits:
+  max_body_bytes: 1048576
+  max_question_chars: 8000
+  max_field_chars: 4000
